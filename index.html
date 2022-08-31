@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gamestop Wallet Connection Demo</title>
+
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="node_modules/@gamestopnft/detect-gamestop-provider/dist/index.min.js"></script>
+
+<style type="text/css">
+  .sign-in-facebook {
+    background: url('https://i.redd.it/y7q3uw5f15r81.jpg') #f2f2f2;
+    background-position: -9px -7px;
+    background-repeat: no-repeat;
+    background-size: 39px 43px;
+    padding-left: 41px;
+    color: #000;
+  }
+  .sign-in-facebook:hover {
+    background: url('https://i.redd.it/y7q3uw5f15r81.jpg') #e0e0e0;
+    background-position: -9px -7px;
+    background-repeat: no-repeat;
+    background-size: 39px 43px;
+    padding-left: 41px;
+    color: #000;
+  }
+</style>
+</head>
+
+  <body>
+
+    <div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills float-right">
+            
+          </ul>
+        </nav>
+        <h3 class="text-muted" style="text-align:center;">WEB3 Interactions frontend</h3>
+      </div>
+
+      <div class="breadcrumb">
+        
+        
+        <p ><a class="btn btn-lg btn-success" href="#"  id="currentaddress" role="button">GAMESTOP Is Not Connected</a></p>
+      </div>
+
+      <br>
+      <button class="btn btn-default" id="connectToGM">
+        <img src="https://i.redd.it/y7q3uw5f15r81.jpg" width="20" /> connect to Gamestop
+      </button>
+
+      <fieldset class="form-horizontal">
+
+        <!-- Form Name -->
+        <legend>Send ethers with web3</legend>
+        
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="textinput">To</label>  
+          <div class="col-md-4">
+          <input id="resaddress" name="resaddress" type="text" placeholder="Enter recipient address" class="form-control input-md">
+            
+          </div>
+        </div>
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="textinput">Amount</label>  
+          <div class="col-md-4">
+          <input id="amount" name="amount" type="text" placeholder="Enter amount in wei" class="form-control input-md">
+            
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-4 control-label" for=""></label>
+          <div class="col-md-4">
+            <button id="" name="" class="btn btn-primary" onclick="send_ether()">Send Ether</button>
+          </div>
+        </div>
+        
+        </fieldset>
+              
+
+      
+
+      <footer class="footer">
+        <p>Complete Ethereum Dapp</p>
+      </footer>
+
+    </div> <!-- /container -->
+  
+ <!-- ABI and ADDRESS -->
+    <script>
+    var connected;
+
+var current_address_span = document.getElementById("currentaddress")
+
+// console.log(SmartContractAddress);
+
+async function connect_to_gamestop() {
+
+    // Modern DApp Browser
+    if (window.gamestop) {
+
+        web3 = new Web3(window.gamestop)
+
+        try {
+
+            gamestop.enable()
+
+            gamestop.request({
+                method: 'eth_accounts',
+            }).then((result) => {
+                current_address = result[0]
+                current_address_span.innerHTML = `GAMESTOP  ACCOUNT:- : ${current_address}`
+                console.log(current_address)
+            });
+
+            console.log("connected")
+
+            return true;
+
+        } catch (err) {
+
+            return false;
+
+        }
+        // For Legacy Browser
+    } else if (window.web3) {
+
+        window.web3 = new Web3(web3.currentProvider);
+
+        return true;
+
+    } else {
+
+        alert("Please Install Gamestop wallet !");
+
+        return false;
+    }
+
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    connected = await connect_to_gamestop();
+    // Connect to smart contract 
+
+});
+document.getElementById('connectToGM').addEventListener('click', event => {
+  let account;
+  gamestop.request({method: 'eth_requestAccounts'}).then(accounts => {
+    account = accounts[0];
+    console.log(account);
+
+  });
+});
+
+window.gamestop.on('accountsChanged', function (accounts) {
+                current_address = accounts[0]
+                current_address_span.innerHTML = `GAMESTOP  ACCOUNT:- : ${current_address}`
+                console.log(current_address);
+  // Time to reload your interface with accounts[0]!
+})
+
+async function send_ether() {
+      let to =document.getElementById("resaddress").value;
+      let amount =document.getElementById("amount").value;
+      let res = await web3.eth.sendTransaction({from: current_address,to: to,value: amount});
+      console.log(res);
+    } 
+
+    </script>
+</body>
+</html>
